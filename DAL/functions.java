@@ -1,5 +1,7 @@
 package DAL;
 
+import java.time.LocalDate;
+
 import java.sql.*;
 
 public class functions 
@@ -112,7 +114,7 @@ public class functions
 
            // Statement myStat = myConn.createStatement();
 
-            String query = "insert into Clients"
+            String query = "insert into Bookings"
                         + " (BookingFor, EventUsed, NumberOfAdults, NumberOfChildren, TotalNumberOfGuests, DateOfEvent, BookingConfirmed, TotalAmount)"
                         + " values (?, ?)";
 
@@ -138,7 +140,7 @@ public class functions
         } 
     }
 
-    public void UpdateMenu(int mealID, String updatedMenu)
+    public void UpdateMenu(int bookingID, String updatedMenu)
     {
         String url = "jdbc:mysql://localhost:3306/DeliciousCatering";
         String user = "user";
@@ -150,11 +152,11 @@ public class functions
 
            // Statement myStat = myConn.createStatement();
 
-            String query = "update TypesOfMeals Clients set MealName = ? where MealID = ?";
+            String query = "update Bookings set Menu = ? where BookingID = ?";
 
             PreparedStatement preparedstm = myConn.prepareStatement(query);
             preparedstm.setString(1, updatedMenu);
-            preparedstm.setInt(2, mealID);
+            preparedstm.setInt(2, bookingID);
 
             preparedstm.executeUpdate();
             
@@ -166,5 +168,42 @@ public class functions
         {
             e.printStackTrace();
         } 
+    }
+
+    public void UpdateBookingConfirmation(int bookingID, Boolean confirmation)
+    {
+        String url = "jdbc:mysql://localhost:3306/DeliciousCatering";
+        String user = "user";
+        String password = "";
+    
+        try 
+        {
+            Connection myConn = DriverManager.getConnection(url, user, password);
+
+           // Statement myStat = myConn.createStatement();
+
+            String query = "update Bookings set BookingConfirmed = ? where BookingID = ?";
+
+            PreparedStatement preparedstm = myConn.prepareStatement(query);
+            preparedstm.setBoolean(1, confirmation);
+            preparedstm.setInt(2, bookingID);
+
+            preparedstm.executeUpdate();
+            
+            myConn.close();
+
+            System.out.println("Confirmation Made!");
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        } 
+    }
+
+    public LocalDate GetBookingDate() 
+    {
+        // Replace with the booking read function
+        LocalDate date = LocalDate.now();
+        return date;
     }
 }

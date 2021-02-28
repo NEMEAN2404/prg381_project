@@ -3,11 +3,50 @@ package BussinessLayer;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.sql.*;
+import java.sql.Date;
 
 import DAL.*;
 
 public class Functions
 {
+    public void MakeBooking()
+    {
+        functions dataAccessLayer = new functions();
+
+        Scanner sc = new Scanner(System.in);
+
+        int bookingFor = 0;
+        // bookingfor = GetClientID();
+
+        int eventUsed = 0;
+        // eventused = GeteventUsed(); should display events and ask what one the client wants
+
+        System.out.println("How many adults are going to attend the event?");
+        int numberOfAdults = sc.nextInt();
+
+        System.out.println("How many children are going to attend the event?");
+        int numberOfChildren = sc.nextInt();
+
+        System.out.println("Enter the year of your event?");
+        int eventYear = sc.nextInt();
+        System.out.println("Enter the month of your event?");
+        int eventmonth = sc.nextInt();
+        System.out.println("Enter the day of your event?");
+        int eventday = sc.nextInt();
+
+        LocalDate date = LocalDate.of(eventYear, eventmonth, eventday);
+        Date DateOfEvent = Date.valueOf(date);
+        //Date DateOfEvent = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        Boolean BookingConfirmed = false;
+
+        Double TotalAmount = 0.0;
+        // to Add the price
+
+        dataAccessLayer.AddNewBooking(bookingFor, eventUsed, numberOfAdults, numberOfChildren, DateOfEvent, BookingConfirmed, TotalAmount);
+    }
+
     public void BookingComfirmation() 
     {
         functions dataAccessLayer = new functions();

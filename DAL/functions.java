@@ -1,13 +1,79 @@
 package DAL;
 
 import java.time.LocalDate;
-
+import java.util.*;
 import java.sql.*;
+import java.sql.Date;
 
 import BussinessLayer.Functions;
 
 public class functions 
 {
+    //Tians work
+    public ArrayList<Date> GetAllBookingDates()
+    {
+        String url = "jdbc:mysql://localhost:3306/DeliciousCatering";
+        String user = "user";
+        String password = "";
+        ArrayList<Date> dates = new ArrayList<Date>();
+    
+        try 
+        {
+            Connection myConn = DriverManager.getConnection(url, user, password);
+
+            Statement myStat = myConn.createStatement();
+
+            String query = "select DateOfEvent from Bookings";
+
+            ResultSet rset = myStat.executeQuery(query);
+
+            while (rset.next()) 
+            {
+                dates.add(rset.getDate("DateOfEvent"));
+            }
+            
+            myConn.close();
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        } 
+
+        return dates;
+    }
+
+    public Double GetTheTotalAmountForBooking(int bookingID)
+    {
+        String url = "jdbc:mysql://localhost:3306/DeliciousCatering";
+        String user = "user";
+        String password = "";
+        Double total = 0.0;
+    
+        try 
+        {
+            Connection myConn = DriverManager.getConnection(url, user, password);
+
+            Statement myStat = myConn.createStatement();
+
+            String query = "select TotalAmount from Bookings where BookingID='"+bookingID+"'";
+
+            ResultSet rset = myStat.executeQuery(query);
+
+            while (rset.next()) 
+            {
+                total = rset.getDouble("TotalAmount");
+            }
+            
+            myConn.close();
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        } 
+
+        return total;
+    }
+
     public void AddNewClient(String clientName, String clientNumber)
     {
         String url = "jdbc:mysql://localhost:3306/DeliciousCatering";
@@ -208,6 +274,7 @@ public class functions
         LocalDate date = LocalDate.now();
         return date;
     }
+    // end of tians work
 
 
     /* ************************************************************************** */

@@ -13,11 +13,15 @@ public class Functions
 
     SendMessage sendMessage = new  SendMessage();
 
+    //tians work
     public void MakeBooking()
     {
         functions dataAccessLayer = new functions();
 
         Scanner sc = new Scanner(System.in);
+
+        Double TotalAmount = 0.0;
+        // to Add the price
 
         int bookingFor = 0;
         // bookingfor = GetClientID();
@@ -27,20 +31,41 @@ public class Functions
 
         System.out.println("How many adults are going to attend the event?");
         int numberOfAdults = sc.nextInt();
+        TotalAmount += 100 * numberOfAdults;
+        clacBookingPrices(TotalAmount, numberOfAdults);
 
         System.out.println("How many children are going to attend the event?");
         int numberOfChildren = sc.nextInt();
+        TotalAmount += 50 * numberOfAdults;
 
-        System.out.println("Enter the year of your event?");
-        int eventYear = sc.nextInt();
-        System.out.println("Enter the month of your event?");
-        int eventmonth = sc.nextInt();
-        System.out.println("Enter the day of your event?");
-        int eventday = sc.nextInt();
+        // Get date and check for unique day
+        Boolean uniqueDate = false;
+        Date DateOfEvent = null;
 
-        LocalDate date = LocalDate.of(eventYear, eventmonth, eventday);
-        Date DateOfEvent = Date.valueOf(date);
-        //Date DateOfEvent = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        while (!uniqueDate)
+        {
+            uniqueDate = true;
+
+            System.out.println("Enter the year of your event?");
+            int eventYear = sc.nextInt();
+            System.out.println("Enter the month of your event?");
+            int eventmonth = sc.nextInt();
+            System.out.println("Enter the day of your event?");
+            int eventday = sc.nextInt();
+
+            LocalDate date = LocalDate.of(eventYear, eventmonth, eventday);
+            DateOfEvent = Date.valueOf(date);
+
+            ArrayList<Date> allDates = dataAccessLayer.GetAllBookingDates();
+
+            for (int i = 0; i < allDates.size(); i++) 
+            {
+                if (allDates.get(i) == DateOfEvent) 
+                {
+                    uniqueDate = false;
+                }
+            }
+        }
 
         try {
             sendMessage.SendAMessage("CharmaineRaheal@gmail.com", "A new booking was maid", "New Booking");
@@ -50,8 +75,7 @@ public class Functions
 
         Boolean BookingConfirmed = false;
 
-        Double TotalAmount = 0.0;
-        // to Add the price
+        sc.close();
 
         dataAccessLayer.AddNewBooking(bookingFor, eventUsed, numberOfAdults, numberOfChildren, DateOfEvent, BookingConfirmed, TotalAmount);
     }
@@ -68,9 +92,8 @@ public class Functions
         if (ChronoUnit.DAYS.between(LocalDate.now(), dataAccessLayer.GetBookingDate()) >= 15) 
         {
 
-            double price = 0;
-            // price = GetPrice(); 
-            // Prices still needs to be determined
+            double price = dataAccessLayer.GetTheTotalAmountForBooking(bookingID)/50;
+
             System.out.println("Your booking is ready to confirm, you need to pay 50% of the cost : R" + price);
             System.out.println("Do you want to update the menu before confirming? (y/n)");
 
@@ -108,6 +131,7 @@ public class Functions
         dataAccessLayer.UpdateMenu(bookingID, newMenu);
         sc.close();
     }
+    // tians work ends
 
     
     

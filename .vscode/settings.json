@@ -1,0 +1,7 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "d:\\Documents\\OneDrive\\Belgium Campus\\Thrid Year\\javamail-1.4.7\\javax.mail.jar",
+        "d:\\Documents\\OneDrive\\Belgium Campus\\Thrid Year\\jaf-1.1.1\\activation.jar"
+    ]
+}

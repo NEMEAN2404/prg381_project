@@ -10,6 +10,9 @@ import DAL.*;
 
 public class Functions
 {
+
+    SendMessage sendMessage = new  SendMessage();
+
     public void MakeBooking()
     {
         functions dataAccessLayer = new functions();
@@ -75,6 +78,12 @@ public class Functions
             dataAccessLayer.UpdateBookingConfirmation(bookingID, true);
 
             System.out.println("Thank you for confirming");
+            System.out.println("Thank you for confirming. You will receive an email with confirmation");
+            try {
+            sendMessage.SendAMessage(dataAccessLayer.GetEmail(bookingID), "This is your booking confirmation for the" + dataAccessLayer.GetBookingDate(), "Booking confirmation");
+            } catch (Exception e) {
+                System.out.println("Your email address was incorrect");
+            }
         }
         else 
         {

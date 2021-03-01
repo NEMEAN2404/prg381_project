@@ -539,4 +539,28 @@ public class functions
     };
 
 
+    public List<String> GetConfirmedBookings(){    
+        String url = "jdbc:mysql://localhost:3306/DeliciousCatering";
+        String user = "root";
+        String password = "r"; 
+        List<String>  People =new ArrayList<String>();   
+        String bookingCred;
+        try {
+         Connection myConn = DriverManager.getConnection(url, user, password);         
+         String query = "SELECT B.BookingID, C.ClientName FROM Bookings B "+
+                        "JOIN Clients C ON B.BookingFor = C.ClientID"+
+                        "WHERE BookingConfirmed = 'True'";
+         Statement stmt = myConn.createStatement();
+         ResultSet rs = stmt.executeQuery(query);                 
+         while (rs.next()) {
+             bookingCred = rs.getString(0) + rs.getString(1);
+             People.add(bookingCred);
+         }
+         myConn.close();
+        } catch (Exception e) {
+            System.out.println("Database could not be found");
+
+        }
+        return People;
+    };
 }

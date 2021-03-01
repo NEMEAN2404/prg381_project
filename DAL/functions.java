@@ -450,5 +450,26 @@ public class functions
 		return detailSet;
     }
 
+    public String GetEmail(int BookingID){    
+        String url = "jdbc:mysql://localhost:3306/DeliciousCatering";
+        String user = "root";
+        String password = "r";
+        String UserEmail = "";          
+        try {
+         Connection myConn = DriverManager.getConnection(url, user, password);         
+         String query = "SELECT C.ClientEmail"+
+                         "FROM Clients C"+
+                         "JOIN Bookings B ON C.ClientID = B.BookingFor"+
+                         "WHERE B.BookingID = " + BookingID;
+         Statement stmt = myConn.createStatement();
+         ResultSet rs = stmt.executeQuery(query);    
+         UserEmail = rs.getString(0);                   
+         myConn.close();
+        } catch (Exception e) {
+            System.out.println("Database could not be found");
+        }
+        return UserEmail;
+    };
+
 
 }

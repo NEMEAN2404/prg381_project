@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import java.sql.*;
 
+import BussinessLayer.Functions;
+
 public class functions 
 {
     public void AddNewClient(String clientName, String clientNumber)
@@ -206,4 +208,243 @@ public class functions
         LocalDate date = LocalDate.now();
         return date;
     }
+
+
+    /* ************************************************************************** */
+    /* *********************THIS MY WORK (TALAAT) ******************************* */
+    /* ************************************************************************** */
+
+
+    //GLOBAL FIELD FOR RETURNING A SET OF DETAILS
+    public ResultSet detailSet;
+    //DATABASE CONNECTION
+    //PLEASE NOTE THAT THIS DEPEND ON YOUR CONNECTION SERVER (MYSQL or SQL SERVER or OTHER)
+    public static Connection connectDB() throws ClassNotFoundException{
+        
+        String url = "jdbc:mysql://localhost:3306/DeliciousCatering";
+        String username = "root";
+        String password = "r";
+
+        System.out.println("Connecting database...");
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            var connection = DriverManager.getConnection(url, username, password);
+            return connection;
+        } catch(SQLException sql){
+            sql.printStackTrace();
+            return null;
+        }
+    }
+
+    //CLIENTS REGISTARTIONS - INSERTING DATA (Clients Table)
+    public String clientRegistertion(String name, String surname, String cleintNum, String password) throws SQLException, ClassNotFoundException{
+        
+        String error = "";
+        //Connection   
+        Connection conn = connectDB();
+        if (conn != null) {
+            //CRAETING STATEMENT
+            try (var st = conn.createStatement()){
+                //Check if user already exists or no (Using prepared statement to prevent sql injection)
+                String checkUser = "SELECT * FROM Clients WHERE ClientNumber='"+cleintNum+"'";
+                //Store the result if there is any
+                ResultSet checkuserSet = st.executeQuery(checkUser);
+
+                if(!checkuserSet.next()){
+                    error = preventRefactor(name, surname, cleintNum, password);
+                }else{
+                    error = "The ID you have enters is already taken.\nIf you opened an account please LOGIN.";
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            
+        }else{
+            error = "Failed Connecting to DB";
+        }
+
+        return error;
+    }
+
+    /* **************************************************************************************** */
+    /* PLEASE NOTE THAT THE BELOW METHOD WAS DONE TO PREVENT THE 'REFACTOR' ERROR GIVEN BY JAVA */
+    /* **************************************************************************************** */
+
+    /* ********************************METHOD START******************************************** */
+    public String preventRefactor(String name, String surname, String cleintNum, String password) throws SQLException, ClassNotFoundException{
+        Functions fun = new Functions();
+        //GLOBAL Error/Success variable
+        String error = "";
+
+        //Connection
+        Connection conn = connectDB();
+        if (conn != null) {
+            //means that there is no user with the given username - its fine for the user to register
+            String insertNewClient = "INSERT INTO Clients(ClientName, ClientSurname, ClientNumber) VALUES('?','?','?')";
+            try (PreparedStatement statement = conn.prepareStatement(insertNewClient)) {
+                statement.setString(1, name);
+                statement.setString(2, surname);
+                statement.setString(3, cleintNum);
+                int row = statement.executeUpdate();
+                if(row > 0){
+                    //INSERTING DATA INTO THE 'USERS' TABLE - NAME AND PASSWORD - AS THIS TABLE WILL BE USED FOR LOGINS
+                    String registerUser = fun.register(name, password);
+                    if(registerUser.equals("Success")){
+                        error ="You have successfully registered";
+                    }else{
+                        error = registerUser;
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }else{
+            error = "Failed Connecting to DATABASE";
+        }
+        return error;
+        
+    }
+    /* ********************************METHOD END********************************************** */
+
+    /* **************************************************************************************** */
+    /* **************************************************************************************** */
+    /* **************************************************************************************** */
+
+    //USER REGISTRATION - INSERTING DATA - (USERS TABLE)
+    public String insertUserData(String name, String pass) throws SQLException, ClassNotFoundException{
+        //Common error variable
+        String error = "";
+
+        //Connection 
+        Connection conn = connectDB();
+
+        //means that there is no user with the given username - its fine for the user to register
+        if (conn != null) {
+            String insertNewUser = "INSERT INTO USERS(UserName, UserPassword) VALUES('?','?')";
+            try (PreparedStatement statement = conn.prepareStatement(insertNewUser)) {
+                statement.setString(1, name);
+                statement.setString(2, pass);
+                int row = statement.executeUpdate();
+                if(row > 0){
+                    error = "Success";
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            error = "DB Connection has failed";
+        }
+
+        return error;
+
+    }
+
+    //USER LOGIN - SELECTING USER
+    public String userLoginSelectUser(String cleintID, String password) throws SQLException, ClassNotFoundException{
+        //GLOBAL ERROR/SUCCESS VARIABLE
+        String error = "";
+        //CONNECTIONS
+        Connection conn = connectDB();
+        if (conn != null) {
+            try (var st = conn.createStatement()) {
+                //Check if user already exists or no (Using prepared statement to prevent sql injection)
+                String checkUser = "SELECT * FROM USERS WHERE UserName='"+cleintID+"' AND UserPassword='"+password+"'";
+                //Store the result if there is any
+                ResultSet checkuserSet = st.executeQuery(checkUser);
+                if (!checkuserSet.next()) {
+                    error = "Either wrong credentials or you did not register.\nIf you did not register please do so\nOR\nDouble check your credentails.";
+                    return error;
+                } else {
+                    error = "Welcome. You have signed in.";
+                    return error;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            String connFailed = "Connection has failed";
+            error = connFailed;
+            return error;
+        }
+		return error; 
+    }
+
+    //View Bookings - Retrieve DATA
+    public String viewBookings(String bookingID) throws SQLException, ClassNotFoundException{
+        String clientId= "";
+        String evnetId= "";
+        String numberOfAdults= "";
+        String numberOfChildren= "";
+        String totalNumberOfGuest= "";
+        String dateOfEvent= "";
+        String bookingConfirmed= "";
+        String daysUntilEvent= "";
+        String totalAmount= "";
+        String clientName= "";
+        String clientSurname= "";
+        String clientNumber= "";
+        String eventName= "";
+        String eventAddress= "";
+        
+        //Getting BookingDetails
+        String query = "SELECT * FROM Bookings WHERE BookingID=? LIMIT 1";
+        ResultSet bookingSet = getDataFromTable(query, bookingID);
+        while(bookingSet.next()){
+            clientId = bookingSet.getString("BookingFor");
+            evnetId = bookingSet.getString("EventUsed");
+            numberOfAdults = bookingSet.getString("NumberOfAdults");
+            numberOfChildren = bookingSet.getString("NumberOfChildren");
+            totalNumberOfGuest = bookingSet.getString("TotalNumberOfGuest");
+            dateOfEvent = bookingSet.getString("DateOfEvent");
+            bookingConfirmed = bookingSet.getString("BookingConfirmed");
+            daysUntilEvent = bookingSet.getString("DaysUntilEvent");
+            totalAmount = bookingSet.getString("TotalAmount");
+        }
+
+        //Getting Clinet Details from Clients tabel
+        String clientDetails = "SELECT * FROM Clients WHERE ClientID=? LIMIT 1";
+        ResultSet clientDetailsSet = getDataFromTable(clientDetails, clientId);
+        while(clientDetailsSet.next()){
+            clientName = clientDetailsSet.getString("ClientName");
+            clientSurname = clientDetailsSet.getString("ClientSurname");
+            clientNumber = clientDetailsSet.getString("ClientNumber");
+        }
+
+        //Getting Event Details from event tabel
+        String evnetDetails = "SELECT * FROM Events WHERE EventID=? LIMIT 1";
+        ResultSet evnetDetailsSet = getDataFromTable(evnetDetails, evnetId);
+        while(evnetDetailsSet.next()){
+            eventName = evnetDetailsSet.getString("EventName");
+            eventAddress = evnetDetailsSet.getString("EventAddress");
+        }
+        
+        String eventDetails ="NumberOfAdults: " + numberOfAdults +","+ "NumberOfChildren: " + numberOfChildren +","+ "TotalNumberOfGuest: " + totalNumberOfGuest +","+ "DateOfEvent: " + dateOfEvent +","+ "BookingConfirmed: " + bookingConfirmed +","+ "DaysUntilEvent: " + daysUntilEvent +","+ "TotalAmount: " + totalAmount + "\n";
+        eventDetails += "ClientName: " + clientName + ", " + "ClientSurname: " + clientSurname + ", " + "ClientNumber: " + clientNumber + "\n";
+        eventDetails += "EventName: " + eventName + ", " + "EventAddress: " + eventAddress;
+
+        return eventDetails;
+        
+    }
+
+    //Get Details From any(table)
+    public ResultSet getDataFromTable(String query, String primaryKeyForTable) throws SQLException, ClassNotFoundException{
+        //Connection To DATABASE
+        Connection conn = connectDB();
+
+        if(conn != null){
+            try (PreparedStatement st = conn.prepareStatement(query)) {
+                st.setString(1, primaryKeyForTable);
+                //This is a global public ResultSet defined at the top
+                detailSet = st.executeQuery();
+                return detailSet;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+		return detailSet;
+    }
+
+
 }

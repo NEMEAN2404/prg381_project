@@ -94,4 +94,101 @@ public class Functions
         dataAccessLayer.UpdateMenu(bookingID, newMenu);
         sc.close();
     }
+
+
+
+    
+    //CLIENTS REGISTARTIONS - VALIDATIONS
+    public String clientReg(String name, String surname, String cleintNum, String password) throws SQLException, ClassNotFoundException{
+        functions fun = new functions();
+        String error = "";
+
+        //Validations 
+        if(name.equals("")){
+            error = "Please enter your name";
+        }else{
+            if (surname.equals("")) {
+                error = "Please enter your surname";
+            } else {
+                if(cleintNum.equals("")){
+                    error = "Please enter your ID number";
+                }else{
+                    if(password.equals("")){
+                        error = "Please choose a password";
+                    }else{
+                        error = fun.clientRegistertion(name, surname, cleintNum, password);
+                    }
+                }
+            }
+        }
+        return error;
+    }
+
+
+    //USER REGISTRATION - VALIDATIONS
+    public String register(String name, String pass) throws SQLException, ClassNotFoundException{
+        functions fun = new functions();
+        //Common error variable
+        String error = "";
+        //Validations
+
+        if(name.equals("")){
+            error = "Please enetr you username";
+        }else{
+            if(pass.equals("")){
+                error = "Please enter you password";
+            }else{
+                error = fun.insertUserData(name, pass);
+               
+            }
+        }
+        return error;
+		
+    }
+
+
+    //USER LOGIN
+    public String login(String clientID, String password) throws SQLException, ClassNotFoundException{
+        functions fun = new functions();
+        //global error/success msg
+        String error = "";
+        //Validations
+        if(clientID.equals("")){
+            error = "Please enetr you clientID";
+        }else{
+            if(password.equals("")){
+                error = "Please enter you password";
+            }else{
+                error = fun.userLoginSelectUser(clientID, password);
+            }
+        }
+        return error;
+    }
+
+    //View Booking Deatails
+    public String viewBooking(String bookingID) throws SQLException, ClassNotFoundException{
+        functions fun = new functions();
+        String error = "";
+        //VALIDATIONS
+        if (bookingID.equals("")) {
+            error = "Please enter your Booking ID in order to see your booking details.";
+        } else {
+            //Code for getting deatils from database
+            error = fun.viewBookings(bookingID);
+        }
+        return error;
+    }
+
+    //CALCULATE BOOKING PRICE
+    public double clacBookingPrices(double price, int numberOfPeople){
+        double totalPrice;
+        if (numberOfPeople < 40) {
+            totalPrice = price*numberOfPeople;
+            return totalPrice;
+        } else {
+            double newPrice = price*0.85;
+            totalPrice = newPrice*numberOfPeople;
+            return totalPrice;
+        }
+    }
 }

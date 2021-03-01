@@ -42,6 +42,12 @@ public class Functions
         Date DateOfEvent = Date.valueOf(date);
         //Date DateOfEvent = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
+        try {
+            sendMessage.SendAMessage("CharmaineRaheal@gmail.com", "A new booking was maid", "New Booking");
+            } catch (Exception e) {
+                System.out.println("Your email address was incorrect");
+            }
+
         Boolean BookingConfirmed = false;
 
         Double TotalAmount = 0.0;
@@ -77,7 +83,6 @@ public class Functions
 
             dataAccessLayer.UpdateBookingConfirmation(bookingID, true);
 
-            System.out.println("Thank you for confirming");
             System.out.println("Thank you for confirming. You will receive an email with confirmation");
             try {
             sendMessage.SendAMessage(dataAccessLayer.GetEmail(bookingID), "This is your booking confirmation for the" + dataAccessLayer.GetBookingDate(), "Booking confirmation");

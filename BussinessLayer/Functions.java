@@ -235,4 +235,12 @@ public class Functions
             System.out.println(item);
         }
     }
+
+    public void ShowUnconfirmBookings(){
+        functions dataAccessLayer = new functions();
+        List<String> people = dataAccessLayer.GetUnconfirmedBookings();
+        for (String item  : people) {
+            System.out.println(item);
+        }
+    }
 }

@@ -131,19 +131,6 @@ public class Functions
         dataAccessLayer.UpdateMenu(bookingID, newMenu);
         sc.close();
     }
-    // tians work ends
-
-    
-    
-    
-    
-    /* ************************************************************************** */
-    /* *********************THIS MY WORK (TALAAT) ******************************* */
-    /* ************************************************************************** */
-    /* ************************************************************************** */
-    /* ************************************************************************** */
-    /* ************************************************************************** */
-    /* ************************************************************************** */
 
     
     //CLIENTS REGISTARTIONS - VALIDATIONS
@@ -237,6 +224,15 @@ public class Functions
             double newPrice = price*0.85;
             totalPrice = newPrice*numberOfPeople;
             return totalPrice;
+        }
+    }
+
+
+    public void ShowConfirmBookings(){
+        functions dataAccessLayer = new functions();
+        List<String> people = dataAccessLayer.GetConfirmedBookings();
+        for (String item  : people) {
+            System.out.println(item);
         }
     }
 }

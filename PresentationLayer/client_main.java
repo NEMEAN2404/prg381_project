@@ -3,7 +3,9 @@ package PresentationLayer;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import BussinessLayer.*; 
+import BussinessLayer.*;
+import BussinessLayer.Functions;
+import DAL.functions; 
 
 
 public class client_main{
@@ -42,10 +44,28 @@ public class client_main{
                 scan.close();
                 break;
             case 3:
+                 System.out.println("Would you like to see the ... \n1.confirmed or \n2.unconfirmed bookings?");
+                 option = scan.nextInt();
+                switch (option) {
+                    case 1:
+                        BussinessLayer.Functions.ShowConfirmBookings();
+                        break;
+                
+                    case 2:
+                        BussinessLayer.Functions.ShowUnconfirmBookings();
+                        break;
+
+                    case 3:
+                        break;
+                }
+
+
+
                 System.out.print("Please enter your booking ID");
                 String bookingID = scan.next();
                 String bookingRes = fun.viewBooking(bookingID);
                 System.out.println(bookingRes);
+                
                 break;
             default:
                 System.out.println("Wrong Option. Please try again.");

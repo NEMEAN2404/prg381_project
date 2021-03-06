@@ -48,19 +48,16 @@ public class client_main{
                  option = scan.nextInt();
                 switch (option) {
                     case 1:
-                        BussinessLayer.Functions.ShowConfirmBookings();
+                        fun.ShowConfirmBookings();
                         break;
                 
                     case 2:
-                        BussinessLayer.Functions.ShowUnconfirmBookings();
+                        fun.ShowUnconfirmBookings();
                         break;
 
                     case 3:
                         break;
                 }
-
-
-
                 System.out.print("Please enter your booking ID");
                 String bookingID = scan.next();
                 String bookingRes = fun.viewBooking(bookingID);

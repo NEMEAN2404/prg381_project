@@ -13,7 +13,7 @@ public class client_main{
         Scanner scan = new Scanner(System.in);
         Functions fun = new Functions();
 
-        System.out.println("Please choose what you want to...\n1.REGISTER\n2.lOGIN\n3.View Booking");
+        System.out.println("Please choose what you want to...\n1.REGISTER\n2.lOGIN\n3.View Booking\n4.Make Booking\n5.Confirm Booking");
         int option = scan.nextInt();
 
         switch (option) {
@@ -66,6 +66,12 @@ public class client_main{
                 String bookingRes = fun.viewBooking(bookingID);
                 System.out.println(bookingRes);
                 
+                break;
+            case 4:
+                fun.MakeBooking();
+                break;
+            case 5:
+                fun.BookingComfirmation();
                 break;
             default:
                 System.out.println("Wrong Option. Please try again.");
